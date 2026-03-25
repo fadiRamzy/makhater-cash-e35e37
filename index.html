@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>قاعدة بيانات عملاء المخاطر — بني سويف والفيوم</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0f1e;
+    --surface: #0f1729;
+    --surface2: #161f35;
+    --border: #1e2d4d;
+    --accent: #1e6bff;
+    --accent2: #00c6ff;
+    --gold: #f5c842;
+    --text: #e8edf8;
+    --text2: #8899bb;
+    --green: #00d68f;
+    --red: #ff4d6d;
+    --orange: #ffb347;
+    --radius: 14px;
+    --glow: 0 0 40px rgba(30,107,255,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── Animated Background ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 10%, rgba(30,107,255,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0,198,255,0.05) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── Header ─── */
+  header {
+    position: relative;
+    z-index: 10;
+    padding: 28px 40px 24px;
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    background: rgba(10,15,30,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .logo-icon {
+    width: 46px;
+    height: 46px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    font-size: 22px;
+    box-shadow: 0 0 20px rgba(30,107,255,0.4);
+  }
+
+  .logo-text h1 {
+    font-size: 18px;
+    font-weight: 900;
+    background: linear-gradient(90deg, var(--text), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+  }
+
+  .logo-text p {
+    font-size: 12px;
+    color: var(--text2);
+    font-weight: 400;
+  }
+
+  .header-stats {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .stat-chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .stat-chip strong {
+    color: var(--accent2);
+    font-weight: 700;
+  }
+
+  /* ─── Main Content ─── */
+  main {
+    position: relative;
+    z-index: 5;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 36px 24px 60px;
+  }
+
+  /* ─── Search Box ─── */
+  .search-section {
+    margin-bottom: 28px;
+  }
+
+  .search-label {
+    display: block;
+    font-size: 13px;
+    color: var(--text2);
+    margin-bottom: 10px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+
+  .search-wrap {
+    position: relative;
+  }
+
+  .search-wrap svg.search-icon {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text2);
+    pointer-events: none;
+    transition: color 0.2s;
+  }
+
+  #searchInput {
+    width: 100%;
+    padding: 16px 52px 16px 50px;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    direction: rtl;
+  }
+
+  #searchInput:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(30,107,255,0.15);
+  }
+
+  #searchInput:focus ~ .search-icon { color: var(--accent); }
+  #searchInput::placeholder { color: var(--text2); font-weight: 400; }
+
+  .clear-btn {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--border);
+    border: none;
+    color: var(--text2);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    display: none;
+    transition: background 0.2s, color 0.2s;
+    font-family: 'Cairo', sans-serif;
+  }
+
+  .clear-btn:hover { background: var(--accent); color: #fff; }
+  .clear-btn.visible { display: block; }
+
+  /* ─── Filters Row ─── */
+  .filters-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    align-items: center;
+  }
+
+  .filter-label {
+    font-size: 13px;
+    color: var(--text2);
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  select.filter-select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+    padding: 8px 12px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238899bb' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: left 10px center;
+    padding-left: 28px;
+  }
+
+  select.filter-select:focus, select.filter-select:hover { border-color: var(--accent); }
+
+  .export-btn {
+    margin-right: auto;
+    background: linear-gradient(135deg, #0d3d26, #0a5234);
+    border: 1px solid #1a7a50;
+    color: var(--green);
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+
+  .export-btn:hover {
+    background: linear-gradient(135deg, #155232, #0e6b42);
+    box-shadow: 0 0 16px rgba(0,214,143,0.2);
+  }
+
+  /* ─── Results Meta ─── */
+  .results-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .results-count {
+    font-size: 13px;
+    color: var(--text2);
+  }
+
+  .results-count strong { color: var(--accent2); }
+
+  /* ─── Table ─── */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--glow);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    direction: rtl;
+  }
+
+  thead {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    padding: 14px 18px;
+    text-align: right;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.2s;
+  }
+
+  th:hover { color: var(--accent2); }
+  th.sorted { color: var(--accent2); }
+  th .sort-arrow { margin-right: 4px; opacity: 0.4; }
+  th.sorted .sort-arrow { opacity: 1; }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(30,45,77,0.5);
+    transition: background 0.15s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(30,107,255,0.05); }
+
+  td {
+    padding: 14px 18px;
+    font-size: 14px;
+    color: var(--text);
+    font-weight: 400;
+    white-space: nowrap;
+  }
+
+  /* Risk score badge */
+  .risk-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+    min-width: 60px;
+  }
+
+  .risk-high { background: rgba(255,77,109,0.12); color: var(--red); border: 1px solid rgba(255,77,109,0.25); }
+  .risk-medium { background: rgba(255,179,71,0.12); color: var(--orange); border: 1px solid rgba(255,179,71,0.25); }
+  .risk-low { background: rgba(0,214,143,0.12); color: var(--green); border: 1px solid rgba(0,214,143,0.25); }
+  .risk-rejected { background: rgba(255,77,109,0.08); color: #ff6b6b; border: 1px solid rgba(255,77,109,0.2); }
+
+  .highlight {
+    background: rgba(245,200,66,0.25);
+    color: var(--gold);
+    border-radius: 3px;
+    padding: 0 2px;
+    font-weight: 700;
+  }
+
+  /* Row number */
+  .row-num {
+    color: var(--text2);
+    font-size: 12px;
+    font-family: monospace;
+    opacity: 0.6;
+  }
+
+  /* ─── Empty State ─── */
+  .empty-state {
+    text-align: center;
+    padding: 80px 40px;
+    color: var(--text2);
+  }
+
+  .empty-state .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
+  .empty-state h3 { font-size: 18px; color: var(--text); margin-bottom: 8px; }
+  .empty-state p { font-size: 14px; }
+
+  /* ─── Pagination ─── */
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+
+  .page-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 40px;
+    text-align: center;
+  }
+
+  .page-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent2); }
+  .page-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
+  .page-btn:disabled { opacity: 0.3; cursor: default; }
+
+  /* ─── Admin Panel ─── */
+  .admin-toggle {
+    position: fixed;
+    bottom: 28px;
+    left: 28px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    color: #fff;
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 12px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 4px 24px rgba(30,107,255,0.4);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 100;
+  }
+
+  .admin-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(30,107,255,0.5);
+  }
+
+  .admin-panel {
+    position: fixed;
+    bottom: 90px;
+    left: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    width: 360px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    z-index: 99;
+    display: none;
+    animation: slideUp 0.2s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(16px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .admin-panel.open { display: block; }
+
+  .admin-panel h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text);
+  }
+
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    padding: 28px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 14px;
+  }
+
+  .upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: rgba(30,107,255,0.05); }
+  .upload-zone .icon { font-size: 32px; margin-bottom: 10px; }
+  .upload-zone p { font-size: 13px; color: var(--text2); line-height: 1.6; }
+  .upload-zone strong { color: var(--accent2); }
+
+  #fileInput { display: none; }
+
+  .upload-status {
+    font-size: 13px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-top: 12px;
+    display: none;
+  }
+
+  .upload-status.success { background: rgba(0,214,143,0.1); color: var(--green); border: 1px solid rgba(0,214,143,0.2); }
+  .upload-status.error { background: rgba(255,77,109,0.1); color: var(--red); border: 1px solid rgba(255,77,109,0.2); }
+  .upload-status.loading { background: rgba(30,107,255,0.1); color: var(--accent2); border: 1px solid rgba(30,107,255,0.2); }
+
+  /* ─── Analytics Bar ─── */
+  .analytics-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .analytics-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .analytics-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--accent), var(--accent2));
+  }
+
+  .analytics-card .label {
+    font-size: 11px;
+    color: var(--text2);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .analytics-card .value {
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .analytics-card .sub {
+    font-size: 11px;
+    color: var(--text2);
+    margin-top: 4px;
+  }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 768px) {
+    header { padding: 18px 16px; }
+    main { padding: 20px 12px 40px; }
+    td, th { padding: 10px 12px; font-size: 13px; }
+    .admin-panel { width: calc(100vw - 40px); left: 20px; }
+    .analytics-bar { grid-template-columns: repeat(2, 1fr); }
+    .table-wrap { overflow-x: auto; }
+  }
+
+  @media (max-width: 480px) {
+    .header-stats { display: none; }
+    .analytics-bar { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ─── Loading Spinner ─── */
+  .spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(30,107,255,0.3);
+    border-top-color: var(--accent2);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ─── Fade-in rows ─── */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  tbody tr { animation: fadeIn 0.2s ease both; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-wrap">
+    <div class="logo-icon">🏦</div>
+    <div class="logo-text">
+      <h1>قاعدة بيانات عملاء المخاطر</h1>
+      <p>محافظتا بني سويف والفيوم — نظام البحث والاستعلام</p>
+    </div>
+  </div>
+  <div class="header-stats">
+    <div class="stat-chip">📊 إجمالي العملاء: <strong id="totalCount">0</strong></div>
+    <div class="stat-chip">🔍 عمليات البحث: <strong id="searchCount">0</strong></div>
+  </div>
+</header>
+
+<main>
+
+  <!-- Analytics -->
+  <div class="analytics-bar">
+    <div class="analytics-card">
+      <div class="label">إجمالي العملاء</div>
+      <div class="value" id="statTotal">—</div>
+      <div class="sub">في قاعدة البيانات</div>
+    </div>
+    <div class="analytics-card">
+      <div class="label">بني سويف</div>
+      <div class="value" id="statBeni">—</div>
+      <div class="sub">عميل</div>
+    </div>
+    <div class="analytics-card">
+      <div class="label">الفيوم</div>
+      <div class="value" id="statFayoum">—</div>
+      <div class="sub">عميل</div>
+    </div>
+    <div class="analytics-card">
+      <div class="label">مرفوض</div>
+      <div class="value" id="statRejected">—</div>
+      <div class="sub">طلب مرفوض</div>
+    </div>
+    <div class="analytics-card">
+      <div class="label">متوسط المبلغ</div>
+      <div class="value" id="statAvg">—</div>
+      <div class="sub">ألف جنيه</div>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="search-section">
+    <label class="search-label">🔍 بحث شامل في جميع الحقول</label>
+    <div class="search-wrap">
+      <svg class="search-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="ابحث باسم العميل، الأخصائي، المكتب، المحافظة..." autocomplete="off">
+      <button class="clear-btn" id="clearBtn" onclick="clearSearch()">✕ مسح</button>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-row">
+    <span class="filter-label">تصفية:</span>
+    <select class="filter-select" id="filterGov" onchange="applyFilters()">
+      <option value="">كل المحافظات</option>
+    </select>
+    <select class="filter-select" id="filterOffice" onchange="applyFilters()">
+      <option value="">كل المكاتب</option>
+    </select>
+    <select class="filter-select" id="filterRisk" onchange="applyFilters()">
+      <option value="">كل التقييمات</option>
+      <option value="high">عالي (≥150)</option>
+      <option value="medium">متوسط (100-149)</option>
+      <option value="low">منخفض (&lt;100)</option>
+      <option value="rejected">مرفوض</option>
+    </select>
+    <button class="export-btn" onclick="exportCSV()">
+      📥 تصدير CSV
+    </button>
+  </div>
+
+  <!-- Results Meta -->
+  <div class="results-meta">
+    <div class="results-count">عرض <strong id="showingCount">0</strong> من <strong id="totalShowing">0</strong> نتيجة</div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap">
+    <table id="dataTable">
+      <thead>
+        <tr>
+          <th onclick="sortBy('_idx')" title="رقم الصف"><span class="sort-arrow">↕</span>#</th>
+          <th onclick="sortBy('المحافظة')"><span class="sort-arrow">↕</span>المحافظة</th>
+          <th onclick="sortBy('المكتب')"><span class="sort-arrow">↕</span>المكتب</th>
+          <th onclick="sortBy('اسم العميل')"><span class="sort-arrow">↕</span>اسم العميل</th>
+          <th onclick="sortBy('اخصائي التمويل')"><span class="sort-arrow">↕</span>أخصائي التمويل</th>
+          <th onclick="sortBy('المبلغ')"><span class="sort-arrow">↕</span>المبلغ (ألف)</th>
+          <th onclick="sortBy('تقييم المخاطر')"><span class="sort-arrow">↕</span>تقييم المخاطر</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" id="pagination"></div>
+
+</main>
+
+<!-- Admin Toggle -->
+<button class="admin-toggle" onclick="toggleAdmin()">
+  ⚙️ لوحة الإدارة
+</button>
+
+<!-- Admin Panel -->
+<div class="admin-panel" id="adminPanel">
+  <h3>⚙️ إدارة البيانات</h3>
+  <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()"
+    ondragover="e=>e.preventDefault()" ondrop="handleDrop(event)">
+    <div class="icon">📂</div>
+    <p>اسحب ملف Excel هنا أو <strong>انقر للاختيار</strong><br>
+    يدعم ملفات .xlsx و .csv</p>
+  </div>
+  <input type="file" id="fileInput" accept=".xlsx,.csv,.xls" onchange="handleFileUpload(event)">
+  <div class="upload-status" id="uploadStatus"></div>
+</div>
+
+<!-- SheetJS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+// ══════════════════════════════════════════════
+// DATA — Embedded from Excel upload
+// ══════════════════════════════════════════════
+let DATA = [{"المحافظة": "محافظه - بنى سويف", "المكتب": "بني سويف", "اسم العميل": "هدير طارق انور مبروك", "اخصائي التمويل": "فادي اشرف بديع", "المبلغ": 100, "تقييم المخاطر": 50}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "بني سويف", "اسم العميل": "سيد جمعه احمد ابراهيم", "اخصائي التمويل": "محمد عبدالحميد محمد", "المبلغ": 100, "تقييم المخاطر": 60}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "بني سويف", "اسم العميل": "محمد زين بكري محمد", "اخصائي التمويل": "وائل فايز عزيز سليمان", "المبلغ": 154, "تقييم المخاطر": 154}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "بني سويف", "اسم العميل": "هاله جمال سلامه جوده ", "اخصائي التمويل": "ياسمين يسن محمد طه", "المبلغ": 110, "تقييم المخاطر": 80}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "بني سويف", "اسم العميل": "رزق عبيد امين غيضان", "اخصائي التمويل": "نهله محمد صادق خليفه", "المبلغ": 242, "تقييم المخاطر": 150}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "بني سويف", "اسم العميل": "سامي احمد عبدالحميد خميس", "اخصائي التمويل": "مصطفي سيد حسن", "المبلغ": 154, "تقييم المخاطر": 100}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "بني سويف", "اسم العميل": "نادر يسن محمد خلف", "اخصائي التمويل": "وائل فايز عزيز سليمان", "المبلغ": 110, "تقييم المخاطر": 110}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "بني سويف شرق", "اسم العميل": "اسماء راضي محمد بدوي", "اخصائي التمويل": "سماح احمد مجاهد بكري", "المبلغ": 242, "تقييم المخاطر": 154}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "الفشن", "اسم العميل": "هشام خالد جمعه عبدالعظيم", "اخصائي التمويل": "حنان صبحي شحاته", "المبلغ": 110, "تقييم المخاطر": 110}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "الفشن", "اسم العميل": "ام هاشم جمعه محمد محمود", "اخصائي التمويل": "ايه مصطفي اسماعيل حسن", "المبلغ": 95, "تقييم المخاطر": 154}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "الفشن", "اسم العميل": "احمد شعبان عبدالقوي ابراهيم", "اخصائي التمويل": "ايه مصطفي اسماعيل حسن", "المبلغ": 110, "تقييم المخاطر": 80}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "الفشن", "اسم العميل": "محمد طارق طه علي محمود", "اخصائي التمويل": "ايه مصطفي اسماعيل حسن", "المبلغ": 100, "تقييم المخاطر": 130}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "الفشن", "اسم العميل": "شريف بطل طه احمد", "اخصائي التمويل": "رانيا احمد سيد سيد", "المبلغ": 242, "تقييم المخاطر": 150}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "الفشن", "اسم العميل": "حسن قرني عبود عوض", "اخصائي التمويل": "ايه مصطفي اسماعيل حسن", "المبلغ": 175, "تقييم المخاطر": 130}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "الفشن", "اسم العميل": "جمال محمد جميل عبداللطيف", "اخصائي التمويل": "ايه مصطفي اسماعيل حسن", "المبلغ": 220, "تقييم المخاطر": 150}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "الفشن", "اسم العميل": "ريهام ربيع فاروق عباس", "اخصائي التمويل": "ايه مصطفي اسماعيل حسن", "المبلغ": 110, "تقييم المخاطر": 110}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "ببا", "اسم العميل": "فايزه فوزي جرجس يواقيم ", "اخصائي التمويل": "حسن بدر حسن مهدي", "المبلغ": 110, "تقييم المخاطر": 70}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "ببا", "اسم العميل": "نجلاء نبيل ابراهيم محمد", "اخصائي التمويل": "احمد ربيع سيد مهران", "المبلغ": 242, "تقييم المخاطر": 242}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "ببا", "اسم العميل": "رابعه سعد جوده موسي", "اخصائي التمويل": "امنيه عادل محمد رضوان", "المبلغ": 154, "تقييم المخاطر": 154}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "ببا", "اسم العميل": "اميره قطب فولي محمد", "اخصائي التمويل": "احمد ربيع سيد مهران", "المبلغ": 242, "تقييم المخاطر": 150}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "ببا", "اسم العميل": "مها حماده عبدالباقي عبدالوهاب", "اخصائي التمويل": "ندا احمد محمود غانم", "المبلغ": 80, "تقييم المخاطر": 80}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "ببا", "اسم العميل": "اسماء احمد محمد حسان", "اخصائي التمويل": "محمد اشرف وزير سيد", "المبلغ": 150, "تقييم المخاطر": 130}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "سمسطا", "اسم العميل": "حسين عبدالحميد عبدالله محمد", "اخصائي التمويل": "زينب بدوي روبي عبدالسلام", "المبلغ": 154, "تقييم المخاطر": 40}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "اهناسيا", "اسم العميل": "الحسين عبدالسلام خيري عبدالسلام", "اخصائي التمويل": "امل ادهم عماد عبدالباسط", "المبلغ": 110, "تقييم المخاطر": 110}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "اهناسيا", "اسم العميل": "عبدالله نصر عباس سيد", "اخصائي التمويل": "هاجر عبدالله بكري عبدالصمد", "المبلغ": 110, "تقييم المخاطر": 80}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "اهناسيا", "اسم العميل": "نجلاء فتحي صابر طه", "اخصائي التمويل": "هاجر عبدالله بكري عبدالصمد", "المبلغ": 150, "تقييم المخاطر": "مرفوض"}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "ناصر", "اسم العميل": "محمد ناصر تهامي عبدالعظيم", "اخصائي التمويل": "اسماء رجب ابراهيم", "المبلغ": 150, "تقييم المخاطر": 110}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "الفنت", "اسم العميل": "عمرو رمضان مهني غريب", "اخصائي التمويل": "اسلام عبدالفتاح عبدالصمد", "المبلغ": 242, "تقييم المخاطر": 100}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "سدس", "اسم العميل": "علي طه عبدالعظيم عبدالله", "اخصائي التمويل": "ميلاد نجيب ارماني", "المبلغ": 100, "تقييم المخاطر": 100}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "سدس", "اسم العميل": "امين احمد عباس احمد", "اخصائي التمويل": "ابانوب ممدوح بشري", "المبلغ": 242, "تقييم المخاطر": 154}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "سدمنت الجبل", "اسم العميل": "مني ثابت نظير توفيق", "اخصائي التمويل": "وجيده رمضان عبدالله علي", "المبلغ": 110, "تقييم المخاطر": 80}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "طنسا", "اسم العميل": "عمرو زكي محمد المالكي", "اخصائي التمويل": "مريم رمضان ياسين", "المبلغ": 242, "تقييم المخاطر": "مرفوض"}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "دنديل", "اسم العميل": "محمد سيد ابراهيم محمد", "اخصائي التمويل": "حازم ناصر نادي", "المبلغ": 110, "تقييم المخاطر": 70}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "دنديل", "اسم العميل": "احمد عادل حسانين بيومي", "اخصائي التمويل": "هاجر ايهاب عبدالله رزق", "المبلغ": 110, "تقييم المخاطر": 70}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "بني سويف", "اسم العميل": "سيد احمد محمد احمد", "اخصائي التمويل": "ايه مصطفي سيد حسن", "المبلغ": 200, "تقييم المخاطر": 150}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "بني سويف", "اسم العميل": "حنان عبدالتواب محمد عويس", "اخصائي التمويل": "نهله سعيد عبدالوهاب", "المبلغ": 110, "تقييم المخاطر": "مرفوض"}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "بني سويف شرق", "اسم العميل": "نورهان جمال محمد محمد", "اخصائي التمويل": "هبه محمد احمد محمد", "المبلغ": 200, "تقييم المخاطر": 100}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "الفشن", "اسم العميل": "هيام عطشي يعقوب محمود", "اخصائي التمويل": "ايه مصطفي اسماعيل حسن", "المبلغ": 110, "تقييم المخاطر": 70}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "سمسطا", "اسم العميل": "هاني شكرالله نجيب اسعد", "اخصائي التمويل": "احمد مظهر زايد طه", "المبلغ": 110, "تقييم المخاطر": 60}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "اهناسيا", "اسم العميل": "نزيه محمد محمد عبده عشري", "اخصائي التمويل": "سونه اشرف ممدوح عبدالحليم", "المبلغ": 110, "تقييم المخاطر": 110}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "ناصر", "اسم العميل": "محمد احمد محمود شعبان", "اخصائي التمويل": "هبه محمد سيد محمد", "المبلغ": 110, "تقييم المخاطر": 60}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "تلت", "اسم العميل": "روماني سمير عطيه رزق", "اخصائي التمويل": "روماني اشرف عزيز نصيف", "المبلغ": 150, "تقييم المخاطر": 100}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "تلت", "اسم العميل": "محمد رمضان محمد حسن", "اخصائي التمويل": "روماني اشرف عزيز نصيف", "المبلغ": 150, "تقييم المخاطر": 70}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "طنسا", "اسم العميل": "ربيع خميس عبدالعظيم عبدالقادر", "اخصائي التمويل": "يوستينا فتحي ملاك غطاس", "المبلغ": 110, "تقييم المخاطر": 110}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "طنسا", "اسم العميل": "دلال عبدالرحمن صابر علي", "اخصائي التمويل": "عفاف حسن رزق ابراهيم", "المبلغ": 110, "تقييم المخاطر": 60}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "سدس", "اسم العميل": "محمد جمال عبدالحميد علي", "اخصائي التمويل": "ميلاد نجيب ارماني عبيد", "المبلغ": 154, "تقييم المخاطر": 110}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "سدس", "اسم العميل": "احمد محمد حنفي علي", "اخصائي التمويل": "زينب علي حسن محمد", "المبلغ": 130, "تقييم المخاطر": 90}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "سدس", "اسم العميل": "علي شمردن محمد حسن", "اخصائي التمويل": "نورا صابر مصطفي محمد", "المبلغ": 154, "تقييم المخاطر": 154}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "بني سويف شرق", "اسم العميل": "حسين رمضان خضر عويس", "اخصائي التمويل": "محمود علي احمد عبدالجواد", "المبلغ": 110, "تقييم المخاطر": 60}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "ببا", "اسم العميل": "سها محمد صلاح الدين محمود", "اخصائي التمويل": "ندا احمد محمود غانم", "المبلغ": 200, "تقييم المخاطر": 100}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "الفشن", "اسم العميل": "عباس عزت عباس ابراهيم", "اخصائي التمويل": "ايه مصطفي اسماعيل حسن", "المبلغ": 130, "تقييم المخاطر": 130}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "ناصر", "اسم العميل": "احمد زكريا عبدالتواب سالم", "اخصائي التمويل": "احمد سيد حسن سيد", "المبلغ": 150, "تقييم المخاطر": 100}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "سدمنت الجبل", "اسم العميل": "عبدالموجود احمد عبدالرحيم", "اخصائي التمويل": "كوثر محمد معوض محمد", "المبلغ": 200, "تقييم المخاطر": 110}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "اهناسيا", "اسم العميل": "محمد راضي محمد امام", "اخصائي التمويل": "فرحه جادالكريم عبدالستار محمد", "المبلغ": 180, "تقييم المخاطر": 150}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "اهناسيا", "اسم العميل": "عمر عبدالناصر يوسف جمعه", "اخصائي التمويل": "هدير طه سيد جنيدي", "المبلغ": 150, "تقييم المخاطر": 110}, {"المحافظة": "محافظه - بنى سويف", "المكتب": "اهناسيا", "اسم العميل": "احمد محمد احمد عبدالله", "اخصائي التمويل": "حسام محمد توفيق علي", "المبلغ": 110, "تقييم المخاطر": 80}, {"المحافظة": "محافظه - الفيوم", "المكتب": "سنورس", "اسم العميل": "مؤمنه علي محمود محفوظ", "اخصائي التمويل": "سميحه عبدالحفيظ احمد نيظار", "المبلغ": 110, "تقييم المخاطر": 70}, {"المحافظة": "محافظه - الفيوم", "المكتب": "الفيوم", "اسم العميل": "سوزان طه محمد عبدالعاطي", "اخصائي التمويل": "صابرين ربيع محمد عبدالقادر", "المبلغ": 120, "تقييم المخاطر": 100}, {"المحافظة": "محافظه - الفيوم", "المكتب": "الفيوم", "اسم العميل": "هاله عطاف محمد السيد", "اخصائي التمويل": "انجي مشمش جرجس لوقا", "المبلغ": 110, "تقييم المخاطر": 110}, {"المحافظة": "محافظه - الفيوم", "المكتب": "طاميه", "اسم العميل": "عمرو ناصر عبدالباقي مرسي", "اخصائي التمويل": "بسمه سيد بيومي عبدالحي", "المبلغ": 154, "تقييم المخاطر": 110}];
+
+// Add index
+DATA = DATA.map((r, i) => ({ ...r, _idx: i + 1 }));
+
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
+let filtered = [...DATA];
+let currentPage = 1;
+const PAGE_SIZE = 15;
+let sortCol = '_idx';
+let sortDir = 1;
+let searchCount = parseInt(localStorage.getItem('searchCount') || '0');
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+function init() {
+  updateStats();
+  populateFilters();
+  render();
+  document.getElementById('searchCount').textContent = searchCount;
+
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('input', debounce(() => {
+    searchCount++;
+    localStorage.setItem('searchCount', searchCount);
+    document.getElementById('searchCount').textContent = searchCount;
+    document.getElementById('clearBtn').classList.toggle('visible', searchInput.value.length > 0);
+    currentPage = 1;
+    applyFilters();
+  }, 150));
+}
+
+function updateStats() {
+  const total = DATA.length;
+  const beni = DATA.filter(r => r['المحافظة'].includes('بنى سويف')).length;
+  const fayoum = DATA.filter(r => r['المحافظة'].includes('الفيوم')).length;
+  const rejected = DATA.filter(r => String(r['تقييم المخاطر']) === 'مرفوض').length;
+  const nums = DATA.filter(r => typeof r['المبلغ'] === 'number');
+  const avg = nums.length ? Math.round(nums.reduce((s, r) => s + r['المبلغ'], 0) / nums.length) : 0;
+
+  document.getElementById('totalCount').textContent = total;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statBeni').textContent = beni;
+  document.getElementById('statFayoum').textContent = fayoum;
+  document.getElementById('statRejected').textContent = rejected;
+  document.getElementById('statAvg').textContent = avg;
+}
+
+function populateFilters() {
+  const govs = [...new Set(DATA.map(r => r['المحافظة']))].sort();
+  const offices = [...new Set(DATA.map(r => r['المكتب']))].sort();
+
+  const govSel = document.getElementById('filterGov');
+  govs.forEach(g => { const o = document.createElement('option'); o.value = g; o.textContent = g; govSel.appendChild(o); });
+
+  const offSel = document.getElementById('filterOffice');
+  offices.forEach(o => { const opt = document.createElement('option'); opt.value = o; opt.textContent = o; offSel.appendChild(opt); });
+}
+
+// ══════════════════════════════════════════════
+// FILTER & SEARCH
+// ══════════════════════════════════════════════
+function applyFilters() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const gov = document.getElementById('filterGov').value;
+  const office = document.getElementById('filterOffice').value;
+  const risk = document.getElementById('filterRisk').value;
+
+  filtered = DATA.filter(row => {
+    if (gov && row['المحافظة'] !== gov) return false;
+    if (office && row['المكتب'] !== office) return false;
+    if (risk) {
+      const v = row['تقييم المخاطر'];
+      if (risk === 'rejected' && String(v) !== 'مرفوض') return false;
+      if (risk === 'high' && (String(v) === 'مرفوض' || Number(v) < 150)) return false;
+      if (risk === 'medium' && (String(v) === 'مرفوض' || Number(v) < 100 || Number(v) >= 150)) return false;
+      if (risk === 'low' && (String(v) === 'مرفوض' || Number(v) >= 100)) return false;
+    }
+    if (q) {
+      const all = Object.values(row).join(' ').toLowerCase();
+      return all.includes(q);
+    }
+    return true;
+  });
+
+  doSort();
+  currentPage = 1;
+  render();
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('clearBtn').classList.remove('visible');
+  currentPage = 1;
+  applyFilters();
+}
+
+// ══════════════════════════════════════════════
+// SORT
+// ══════════════════════════════════════════════
+function sortBy(col) {
+  if (sortCol === col) sortDir *= -1;
+  else { sortCol = col; sortDir = 1; }
+
+  document.querySelectorAll('th').forEach(th => th.classList.remove('sorted'));
+  event.currentTarget.classList.add('sorted');
+  event.currentTarget.querySelector('.sort-arrow').textContent = sortDir === 1 ? '↑' : '↓';
+
+  doSort();
+  render();
+}
+
+function doSort() {
+  filtered.sort((a, b) => {
+    const av = a[sortCol], bv = b[sortCol];
+    const an = typeof av === 'number', bn = typeof bv === 'number';
+    if (an && bn) return (av - bv) * sortDir;
+    return String(av || '').localeCompare(String(bv || ''), 'ar') * sortDir;
+  });
+}
+
+// ══════════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════════
+function render() {
+  const q = document.getElementById('searchInput').value.trim();
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const page = filtered.slice(start, start + PAGE_SIZE);
+
+  const tbody = document.getElementById('tableBody');
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `
+      <tr><td colspan="7">
+        <div class="empty-state">
+          <div class="icon">🔍</div>
+          <h3>لا توجد نتائج</h3>
+          <p>جرب تغيير كلمات البحث أو الفلاتر</p>
+        </div>
+      </td></tr>`;
+  } else {
+    tbody.innerHTML = page.map((row, i) => {
+      const riskVal = row['تقييم المخاطر'];
+      const isRejected = String(riskVal) === 'مرفوض';
+      const riskNum = Number(riskVal);
+      let badgeClass = 'risk-low';
+      if (isRejected) badgeClass = 'risk-rejected';
+      else if (riskNum >= 150) badgeClass = 'risk-high';
+      else if (riskNum >= 100) badgeClass = 'risk-medium';
+
+      return `<tr style="animation-delay:${i * 0.03}s">
+        <td class="row-num">${row._idx}</td>
+        <td>${hl(row['المحافظة'], q)}</td>
+        <td>${hl(row['المكتب'], q)}</td>
+        <td><strong>${hl(row['اسم العميل'], q)}</strong></td>
+        <td>${hl(row['اخصائي التمويل'], q)}</td>
+        <td>${hl(String(row['المبلغ']), q)}</td>
+        <td><span class="risk-badge ${badgeClass}">${hl(String(riskVal), q)}</span></td>
+      </tr>`;
+    }).join('');
+  }
+
+  document.getElementById('showingCount').textContent = Math.min(start + PAGE_SIZE, filtered.length) - start;
+  document.getElementById('totalShowing').textContent = filtered.length;
+  renderPagination();
+}
+
+function hl(text, query) {
+  if (!query) return text;
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp(`(${escaped})`, 'gi'), '<span class="highlight">$1</span>');
+}
+
+// ══════════════════════════════════════════════
+// PAGINATION
+// ══════════════════════════════════════════════
+function renderPagination() {
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const pg = document.getElementById('pagination');
+  if (totalPages <= 1) { pg.innerHTML = ''; return; }
+
+  let html = `<button class="page-btn" onclick="goPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>→</button>`;
+
+  for (let i = 1; i <= totalPages; i++) {
+    if (totalPages > 7 && (i > 2 && i < totalPages - 1 && Math.abs(i - currentPage) > 1)) {
+      if (i === 3 || i === totalPages - 2) html += '<span style="color:var(--text2);padding:0 4px">…</span>';
+      continue;
+    }
+    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goPage(${i})">${i}</button>`;
+  }
+
+  html += `<button class="page-btn" onclick="goPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>←</button>`;
+  pg.innerHTML = html;
+}
+
+function goPage(p) {
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  if (p < 1 || p > totalPages) return;
+  currentPage = p;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ══════════════════════════════════════════════
+// EXPORT CSV
+// ══════════════════════════════════════════════
+function exportCSV() {
+  const cols = ['المحافظة', 'المكتب', 'اسم العميل', 'اخصائي التمويل', 'المبلغ', 'تقييم المخاطر'];
+  const header = cols.join(',');
+  const rows = filtered.map(r => cols.map(c => `"${String(r[c]).replace(/"/g, '""')}"`).join(','));
+  const csv = '\uFEFF' + [header, ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `عملاء_المخاطر_${new Date().toLocaleDateString('ar-EG')}.csv`;
+  a.click();
+}
+
+// ══════════════════════════════════════════════
+// ADMIN — File Upload
+// ══════════════════════════════════════════════
+function toggleAdmin() {
+  document.getElementById('adminPanel').classList.toggle('open');
+}
+
+document.addEventListener('click', e => {
+  const panel = document.getElementById('adminPanel');
+  const btn = document.querySelector('.admin-toggle');
+  if (!panel.contains(e.target) && !btn.contains(e.target)) panel.classList.remove('open');
+});
+
+function handleDrop(e) {
+  e.preventDefault();
+  const file = e.dataTransfer.files[0];
+  if (file) processFile(file);
+}
+
+function handleFileUpload(e) {
+  const file = e.target.files[0];
+  if (file) processFile(file);
+}
+
+function setStatus(msg, type) {
+  const el = document.getElementById('uploadStatus');
+  el.textContent = msg;
+  el.className = `upload-status ${type}`;
+  el.style.display = 'block';
+}
+
+function processFile(file) {
+  setStatus('⏳ جاري معالجة الملف...', 'loading');
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const wb = XLSX.read(e.target.result, { type: 'array' });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      let rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
+
+      // Normalize columns
+      rows = rows.map((r, i) => {
+        const normalized = {};
+        Object.keys(r).forEach(k => {
+          const clean = k.trim().replace(/^Unnamed.*/, '');
+          if (clean) normalized[clean] = r[k];
+        });
+        normalized._idx = i + 1;
+        return normalized;
+      }).filter(r => Object.keys(r).length > 1);
+
+      DATA = rows;
+      filtered = [...DATA];
+      updateStats();
+      populateFilters();
+      applyFilters();
+      setStatus(`✅ تم تحميل ${rows.length} صف بنجاح!`, 'success');
+    } catch (err) {
+      setStatus('❌ خطأ في قراءة الملف. تأكد من صيغة .xlsx أو .csv', 'error');
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// ══════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════
+function debounce(fn, ms) {
+  let t;
+  return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+}
+
+// ══════════════════════════════════════════════
+// START
+// ══════════════════════════════════════════════
+init();
+</script>
+</body>
+</html>
